@@ -9,49 +9,56 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      #Step 1: For Checkout the Code
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+      # Step 1: Checkout the Code
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-      #Step 2: Setup Node.js
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-         node-version: '18'
+      # Step 2: Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-      #Step 3: Install Dependencies
-    - name: Install dependencies
-      run: npm install
-   
-      #Step 4: Run tests
-    - name: Run tests
-      run: npm test
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Run tests
+      - name: Run tests
+        run: npm test
 
   build:
     runs-on: ubuntu-latest
-    needs: test                  #required 1st stage to pass
+    needs: test # Ensure tests pass first
 
     steps:
-    - name: Build docker image
-      run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-demo-app .
+      # Checkout the code again (required in separate job)
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
+      # Build Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-demo-app .
 
-  Login_Push:
+  login_push:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-    - name: Login to DockerHub
-      uses: actions/login-action@v2
-      with:
+      # Checkout the code again (optional, mainly for context)
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Login to DockerHub
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-    - name: Push Docker image to Dockerhub
-      run: |
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-demo-app
-   
-    
-      
-       
+      # Push Docker image
+      - name: Push Docker image to DockerHub
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-demo-app
+
