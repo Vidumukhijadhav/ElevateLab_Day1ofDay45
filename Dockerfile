@@ -4,10 +4,12 @@ FROM node:18
 WORKDIR /nodejs-demo-app
 
 
-COPY . .
+COPY package*.json ./
 
 
 RUN npm install
+
+COPY . .
 
 
 EXPOSE 3000
