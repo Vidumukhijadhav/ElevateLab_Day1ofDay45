@@ -39,7 +39,7 @@ jobs:
       # Build Docker image
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-demo-app .
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-demo-app-sample .
 
   login_push:
     runs-on: ubuntu-latest
@@ -60,10 +60,10 @@ jobs:
           # Build Docker image (must rebuild because new runner)
       - name: Build Docker image
         run: |
-         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-demo-app .
+         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-demo-app-sample .
 
       # Push Docker image
       - name: Push Docker image to DockerHub
         run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-demo-app
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-demo-app-sample
 
